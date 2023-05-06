@@ -79,3 +79,20 @@ async function saveToGithub(audioBlob) {
         ]
       })
     });
+    const newTreeData = await createNewTree.json();
+    const newTreeSha = newTreeData.sha;
+
+    // Create a new commit
+    const createNewCommit = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/commits`, {
+      method: "POST",
+      headers: {
+        "Authorization": `token ${githubToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "Add new audio file",
+        tree: newTreeSha,
+        parents: [currentCommitSha]
+      })
+    });
+    const newCommitData = await createNewCommit.json();
